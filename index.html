@@ -6,22 +6,22 @@
 	<title>MCCC Cadastre Map - Beta</title>
 
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	
 
 
     <link rel="stylesheet" href="js/leaflet.css" />
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" /> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" /> 
     <script src="js/leaflet.js" ></script>
     <script src="js/jquery.js"></script>
 
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
 
-     <link rel="stylesheet" href="js/styles.css" />
+    <link rel="stylesheet" href="js/styles.css" />
 
 </head>
 <body>
@@ -41,11 +41,36 @@
     
 <div id='map'></div>
 
+<button id='getJSON'>Get Straya</button>
+
 <script type="text/javascript" src="layersFour.js"></script>
 <script type="text/javascript" src="Leaflet-Select-Polygons.js"></script>
 
-
-
+<script>
+$("#getJSON").click(function(){
+    /*Jquery ajax test */  
+    console.log('CLICKED')
+    $.ajax({
+        url:'https://ahocevar.com/geoserver/ows',
+        type:'GET',
+        data:{
+            service:'WFS',
+            version:'2.0.0',
+            request:'GetFeature',
+            typeNames:'opengeo:countries',
+            bbox:'-35.29,149.50,-35.20,149.68',
+            outputFormat:'json'
+        },
+        success:function(response){
+            alert(response);
+            console.log(this.url);
+            console.log(response);
+            L.geoJson(response).addTo(map);
+        }
+        /*beforeSend:function(xhr){console.log(xhr)}*/
+    });
+});
+</script>
 
 
 </body>
