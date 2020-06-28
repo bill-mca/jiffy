@@ -41,13 +41,17 @@
     
 <div id='map'></div>
 
-<button id='getJSON'>Get Straya</button>
+<button id='getStraya'>Get Straya</button>
+<button id='getTassie'>Get Tassie</button>
+<button id='getTassieLocal'>Get Tassie Local</button>
+<br>
+<p id='map_coords'></p>
 
 <script type="text/javascript" src="layersFour.js"></script>
 <script type="text/javascript" src="Leaflet-Select-Polygons.js"></script>
 
 <script>
-$("#getJSON").click(function(){
+$("#getStraya").click(function(){
     /*Jquery ajax test */  
     console.log('CLICKED')
     $.ajax({
@@ -71,7 +75,73 @@ $("#getJSON").click(function(){
     });
 });
 </script>
+<script>
+  $("#getTassie").click(function(){
+  var owsrootUrl = 'http://127.0.0.1:8080/geoserver/ows';
+  var defaultParameters = {
+    service : 'WFS',
+    version : '2.0',
+    request : 'GetFeature',
+    typeName : 'topp:tasmania_roads',
+    outputFormat : 'text/javascript',
+    format_options : 'callback:getJson',
+    SrsName : 'EPSG:4326'
+  };
 
+  var parameters = L.Util.extend(defaultParameters);
+  var URL = owsrootUrl + L.Util.getParamString(parameters);
+  console.log(URL);
+
+  var WFSLayer = null;
+  var ajax = $.ajax({
+    url : URL,
+    dataType : 'jsonp',
+    jsonpCallback : 'getJson',
+    success : function (response) {
+        WFSLayer = L.geoJson(response, {
+            style: function (feature) {
+                return {
+                    stroke: true,
+                    fillColor: 'FFFFFF',
+                    fillOpacity: 0
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                popupOptions = {maxWidth: 200};
+                layer.bindPopup("Popup text, access attributes with feature.properties.ATTRIBUTE_NAME"
+                    ,popupOptions);
+            }
+  }).addTo(map);
+  console.log(WFSLayer)
+  console.log(WFSLayer.getBounds())
+  map.fitBounds(WFSLayer.getBounds())
+  }
+  });
+});
+</script>
+<script>
+$("#getTassieLocal").click(function(){
+    /*Jquery ajax test */  
+    console.log('CLICKED')
+    $.ajax({
+        url:'tassie.geojson',
+        type:'GET',
+        success:function(response){
+            alert(response);
+            console.log(this.url);
+            console.log(response);
+            L.geoJson(response).addTo(map);
+        }
+        /*beforeSend:function(xhr){console.log(xhr)}*/
+    });
+});
+</script>
+<script>
+  map.on('mousemove', function(e){
+  var str = "Latitude: "+e.latlng.lat.toFixed(5)+"  Longitude: "+e.latlng.lng.toFixed(5)+"  Zoom Level: " + map.getZoom();
+   $("#map_coords").html(str);
+});
+</script>
 
 </body>
 </html>

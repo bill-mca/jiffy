@@ -92,7 +92,7 @@ var popupLayer;
 function highlightFeature(e) {
     var layer = e.target;
     layer.setStyle(stylelayer.highlight);
-    info.update(layer.feature.properties);
+    /*info.update(layer.feature.properties);*/
 }
 
 
